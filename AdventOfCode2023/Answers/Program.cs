@@ -6,12 +6,19 @@ Console.WriteLine("Advent of Code 2023");
 
 var assembly = Assembly.GetExecutingAssembly();
 var types = assembly.GetTypes();
-var answerProviderTypes = types.Where(t => t.IsClass && t.IsAssignableTo(typeof(IAnswerProvider)));
+
+var answerProviderTypes = types
+    .Where(t => t.IsClass && t.IsAssignableTo(typeof(IAnswerProvider)))
+    .OrderBy(t => t.GetCustomAttribute<OutputOrderAttribute>()?.SortOrder ?? double.MaxValue)
+    .ThenBy(t => t.Name);
+
 foreach (var answerProviderType in answerProviderTypes)
 {
-    var input = await InputHelper.GetInputLines(@"Days\1\Input1.txt");
-    var constructor = answerProviderType.GetConstructor(new Type[] { typeof(string[]) });
-    var answerProvider = (IAnswerProvider)constructor.Invoke(new object?[] { input });
-    var answer = answerProvider.GetAnswer();
-    Console.WriteLine($"Day {answerProvider.DayId}: {answer}");
+    var constructor = answerProviderType.GetConstructor(Array.Empty<Type>());
+    var answerProvider = (IAnswerProvider)constructor.Invoke(null);
+
+    var input = await InputHelper.GetInputLines(answerProvider.InputPath);
+    var answer = answerProvider.GetAnswer(input);
+
+    Console.WriteLine($"{answerProvider.DayName}: {answer}");
 }

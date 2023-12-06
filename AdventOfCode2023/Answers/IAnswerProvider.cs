@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 namespace Answers;
 internal interface IAnswerProvider
 {
-    public string DayId { get; }
+    public string DayName { get; }
 
-    public int GetAnswer();
+    public string InputPath { get; }
 
-    public void PrintAnswer() => Console.WriteLine($"Day {DayId}: {GetAnswer()}");
+    public int GetAnswer(string[] inputLines);
+
+    public void PrintAnswer(string[] inputLines) => Console.WriteLine($"{DayName}: {GetAnswer(inputLines)}");
 }

@@ -1,24 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Answers.Days._1;
 
-namespace Answers.Days._1;
-internal class Day1Part1AnswerProvider : IAnswerProvider
+[OutputOrder(1.1)]
+internal class Day2Part1AnswerProvider : IAnswerProvider
 {
-    private readonly string[] _inputLines;
+    public const string INPUT_PATH = @"Days\1\Input1.txt";
 
-    public Day1Part1AnswerProvider(string[] inputLines)
+    public string InputPath => INPUT_PATH;
+
+    public string DayName => "Day 1 Part 1";
+
+    public int GetAnswer(string[] inputLines)
     {
-        _inputLines = inputLines;
+        var numbers = inputLines.Select(BuildNumber);
+        var result = numbers.Sum();
+        return result;
     }
 
-    public string DayId => "1.1";
-
-    public int GetAnswer()
+    private static int BuildNumber(string word)
     {
-        return 1;
+        List<int> digits = new();
+        foreach(var c in word)
+        {
+            var numericValue = char.GetNumericValue(c);
+            if (numericValue > 0)
+            {
+                digits.Add((int)numericValue);
+                continue;
+            }
+        }
+        return (digits.First() * 10) + digits.Last();
     }
 }
